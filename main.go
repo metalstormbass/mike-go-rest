@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
-	//BearerToken := cmd.GetCreds()
-	cmd.Search()
+	// Start Program
+	cmd.Root()
+
 }

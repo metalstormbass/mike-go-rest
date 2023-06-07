@@ -15,11 +15,16 @@ import (
 var AccessToken string
 
 func GetCreds() (accessToken string) {
+	APIROOT := "https://accounts.spotify.com/api/"
+
 	// Spotify Client ID + Client Secret
 	CLIENT_ID := os.Getenv("CLIENT_ID")
 	CLIENT_SECRET := os.Getenv("CLIENT_SECRET")
 
-	apiUrl := "https://accounts.spotify.com/api/token"
+	// Build URL
+
+	apiUrl := APIROOT + "token"
+
 	AccessToken = getCreds(apiUrl, CLIENT_ID, CLIENT_SECRET)
 
 	return AccessToken
