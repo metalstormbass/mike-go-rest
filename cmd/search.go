@@ -1,11 +1,25 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"os"
 	"strings"
 )
+
+// Define Structs for JSON
+type SpotifyResponse struct {
+	Tracks struct {
+		Items []struct {
+			Artists []struct {
+				Name string `json:"name"`
+			} `json:"artists"`
+			Name string `json:"name"`
+			URI  string `json:"uri"`
+		} `json:"items"`
+	} `json:"tracks"`
+}
 
 func Search(BearerToken string, APIROOT string, searchTerm string, searchType string) {
 
@@ -29,5 +43,17 @@ func Search(BearerToken string, APIROOT string, searchTerm string, searchType st
 	// Build Final URL
 	url := APIROOT + "search?q=" + url.QueryEscape(searchTerm) + "&type=" + searchType
 
-	SendRequest(BearerToken, url)
+	responseJson := SendRequest(BearerToken, url)
+
+	var spotifyResponse SpotifyResponse
+
+	json.Unmarshal(responseJson, &spotifyResponse)
+
+	for _, item := range spotifyResponse.Tracks.Items {
+
+		fmt.Println(item.Artists)
+
+	}
+	//fmt.Println(spotifyResponse)
+
 }

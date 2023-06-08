@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func SendRequest(BearerToken string, url string) {
+func SendRequest(BearerToken string, url string) (response []byte) {
 	// Create an HTTP client
 	client := &http.Client{}
 
@@ -33,7 +33,8 @@ func SendRequest(BearerToken string, url string) {
 		fmt.Println("Error reading HTTP response body:", err)
 		return
 	}
+
 	// Print the response body as raw text
-	fmt.Println(string(body))
+	return body
 
 }

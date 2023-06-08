@@ -21,6 +21,13 @@ func GetCreds() (accessToken string) {
 	CLIENT_ID := os.Getenv("CLIENT_ID")
 	CLIENT_SECRET := os.Getenv("CLIENT_SECRET")
 
+	// Validate ENV are there
+
+	if CLIENT_ID == "" || CLIENT_SECRET == "" {
+		fmt.Println("Please Ensure that you have set CLIENT_ID and CLIENT_SECRET")
+		os.Exit(2)
+	}
+
 	// Build URL
 
 	apiUrl := APIROOT + "token"
