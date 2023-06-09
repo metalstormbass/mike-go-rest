@@ -8,6 +8,11 @@ import (
 )
 
 // Global Variables
+// Response Struct
+type tableStruct struct {
+	track string
+	url   string
+}
 
 func Root() {
 
@@ -51,27 +56,30 @@ func Root() {
 	// Search
 	//Hardcoding searchType for now
 	searchType := "track"
-	var urlList []string
 
-	// Build URI List
+	// Build URL List
+	valuesMap := make(map[string]tableStruct)
 	for track, artist := range tracks {
-		url := Search(BearerToken, APIROOT, track, artist, searchType)
-		urlList = append(urlList, url)
+		responseMap := Search(BearerToken, APIROOT, track, artist, searchType)
+
+		for key, value := range responseMap {
+			valuesMap[key] = tableStruct{value.track, value.url}
+		}
 	}
-	fmt.Println(urlList)
-	FormatPlayList(tracks, urlList)
+	//fmt.Println(urlList)
+	FormatPlayList(valuesMap)
 
 }
 
 // Table Function
-func FormatPlayList(tracks map[string]string, urlList []string) {
+func FormatPlayList(valuesMap map[string]tableStruct) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	t.AppendHeader(table.Row{"Track", "Artist", "URL"})
 	i := 0
-	for x, y := range tracks {
+	for x, y := range valuesMap {
 
-		t.AppendRow([]interface{}{x, y, urlList[i]})
+		t.AppendRow([]interface{}{x, y.track, y.url})
 		i++
 	}
 	t.Render()

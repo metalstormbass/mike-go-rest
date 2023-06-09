@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"net/url"
+	"strings"
 )
 
 // Define Structs for JSON
@@ -21,7 +22,13 @@ type SpotifyResponse struct {
 	} `json:"tracks"`
 }
 
-func Search(BearerToken string, APIROOT string, track string, artist string, searchType string) (uri string) {
+// Response Struct
+type ResponseStruct struct {
+	track string
+	url   string
+}
+
+func Search(BearerToken string, APIROOT string, track string, artist string, searchType string) (responseMap map[string]ResponseStruct) {
 	/*
 		// Validate Search Type
 		allowedTerms := []string{"album", "artist", "playlist", "track", "show", "episode", "audiobook"}
@@ -40,8 +47,9 @@ func Search(BearerToken string, APIROOT string, track string, artist string, sea
 			os.Exit(2)
 		}
 	*/
+
 	// Build Final URL
-	url := APIROOT + "search?q=" + url.QueryEscape(track) + "&type=" + searchType
+	url := APIROOT + "search?q=" + url.QueryEscape(track) + "&type=" + searchType + "&limit=50"
 
 	// Parse Response
 	responseJson := GetRequest(BearerToken, url)
@@ -50,18 +58,29 @@ func Search(BearerToken string, APIROOT string, track string, artist string, sea
 
 	json.Unmarshal(responseJson, &spotifyResponse)
 
-	// Compare JSON against Search Terms and assemble list of URI
+	valuesMap := make(map[string]ResponseStruct)
+
+	// Compare JSON against Search Terms and get URL / Artist / Track
 
 	for _, item := range spotifyResponse.Tracks.Items {
 
 		artistresp := string(item.Artists[0].Name)
-		if artist == artistresp || artist != "" {
+
+		if strings.ToLower(artist) == strings.ToLower(artistresp) {
+
+			spotifyUrl := item.ExternalURL.Spotify
+			track := item.Name
+
+			valuesMap[artistresp] = ResponseStruct{track, spotifyUrl}
+
+			return valuesMap
+		} else if artist == "" {
+
 			spotifyUrl := item.ExternalURL.Spotify
 
-			return spotifyUrl
-		} else {
-			spotifyUrl := item.ExternalURL.Spotify
-			return spotifyUrl
+			valuesMap[artistresp] = ResponseStruct{track, spotifyUrl}
+
+			return valuesMap
 		}
 
 	}
