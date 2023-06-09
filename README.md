@@ -8,6 +8,8 @@ Create an app within [Spotify](https://developer.spotify.com/dashboard) and get 
 
 ## Usage
 
+Set ```CLIENT_ID``` and ```CLIENT_SECRET``` as environment variables.
+
 ```go run main.go <path to text file>```
 
 The text file can be in these formats, one per line.
