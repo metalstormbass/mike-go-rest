@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 )
 
@@ -25,24 +24,22 @@ func Parse(inputFile string) (songList map[string]string) {
 	songs := make(map[string]string)
 
 	for scanner.Scan() {
+
+		// Extract each line
 		line := scanner.Text()
 
-		// Validate the input format
-		if !validateString(line) {
-			//fmt.Printf("%s is not a valid input - skipping \n", line)
-			break
+		// Trim line
+		item := strings.TrimSpace(line)
+		lineSplit := strings.SplitN(item, "-", 2)
+
+		if len(lineSplit) == 1 {
+			lineSplit = append(lineSplit, "")
 		}
-
-		// Map strings
-		lineSplit := strings.Split(line, "-")
-		songs[lineSplit[0]] = lineSplit[1]
+		// Assemble List
+		if lineSplit[0] != "" {
+			songs[strings.TrimSpace(lineSplit[0])] = strings.TrimSpace(lineSplit[1])
+		}
 	}
+	return songs
 
-	return songList
-
-}
-
-func validateString(s string) bool {
-	re := regexp.MustCompile("(?i)[A-Za-z]+.*-.*[A-Za-z]+")
-	return re.MatchString(s)
 }

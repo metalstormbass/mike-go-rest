@@ -7,11 +7,12 @@ import (
 	"net/http"
 )
 
-func SendRequest(BearerToken string, url string) (response []byte) {
+func GetRequest(BearerToken string, url string) (response []byte) {
 	// Create an HTTP client
 	client := &http.Client{}
 
 	// Create an HTTP request with custom headers
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal("Error creating HTTP request:", err)
